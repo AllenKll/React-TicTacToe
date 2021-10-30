@@ -1,7 +1,7 @@
-name: Build React App
+name: Build and Deploy App
 on: [push]
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -15,4 +15,11 @@ jobs:
       - name: Building...
         run: |
           npm run build
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Sync to Server
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ftp.kennedystuff.com
+          username: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          local-dir: ./build/
+          server-dir: /public_html/react/tictactoe/
